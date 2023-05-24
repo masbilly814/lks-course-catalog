@@ -8,24 +8,24 @@ env:
 
 phases:
   install:
-    runtmie-versions:
+    runtime-versions:
       nodejs: 16
       docker: 20
   pre_build:
     commands:
       - echo "install Dependencies and login into ECR"
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/d1j1o2e6
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 047166695064.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
     - echo "Run unit testing and build docker image"
     - npm install
     - npm run test
     - docker build -t course-catalog:latest .
-    - docker tag course-catalog:latest public.ecr.aws/d1j1o2e6/lks-ecr-repo:latest .
+    - docker tag course-catalog:latest 047166695064.dkr.ecr.us-east-1.amazonaws.com/lks-ecr-repository:latest
   post_build:
     commands:
     - echo "push the image to ECR.."
-    - docker push public.ecr.aws/d1j1o2e6/lks-ecr-repo:latest .
+    - docker push 047166695064.dkr.ecr.us-east-1.amazonaws.com/lks-ecr-repository:latest
     - echo "build complete.."
 reports:
   test-report:
