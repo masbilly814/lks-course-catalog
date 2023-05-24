@@ -18,7 +18,9 @@ phases:
   build:
     commands:
     - echo "Run unit testing and build docker image"
-    - docker build -t course-catalog .
+    - npm install
+    - npm run test
+    - docker build -t course-catalog:latest .
     - docker tag course-catalog:latest public.ecr.aws/d1j1o2e6/lks-ecr-repo:latest .
   post_build:
     commands:
