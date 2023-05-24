@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  variables:
+    ECR_REPO: "public.ecr.aws/d1j1o2e6/lks-ecr-repo"
+    ECR_REGION: "us-east-1"
+    CONTAINER_NAME: "course-catalog"
+
+phases:
+  install:
+    runtmie-versions:
+      nodejs: 16
+      docker: 20
+  pre_build:
+    commands:
+      - echo "install Dependencies and login into ECR"
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/d1j1o2e6
+  build:
+    commands:
+    - echo "Run unit testing and build docker image"
+    - docker build -t course-catalog .
+    - docker tag course-catalog:latest public.ecr.aws/d1j1o2e6/lks-ecr-repo:latest .
+  post_build:
+    commands:
+    - echo "push the image to ECR.."
+    - docker push public.ecr.aws/d1j1o2e6/lks-ecr-repo:latest .
+    - echo "build complete.."
+reports:
+  test-report:
+    files:
+     - 'report/test-result.xml'
+     file-format: JUNITXML
+
+artifacts:
+ files:
+ -imagedefinitions.json
